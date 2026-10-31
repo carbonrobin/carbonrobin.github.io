@@ -6,131 +6,109 @@
     <title>CarbonRobin</title>
     <style>
       :root {
-        --bg: #0d1117;
-        --panel: #111827;
-        --panel-alt: #171f2e;
-        --ink: #e5e7eb;
-        --muted: #9aa4b2;
-        --accent: #7dd3fc;
-        --accent-soft: rgba(125, 211, 252, 0.12);
-        --line: rgba(148, 163, 184, 0.2);
+        --bg: #0b0b0d;
+        --panel: #111214;
+        --ink: #f4f4f5;
+        --muted: #a1a1aa;
+        --line: rgba(255, 255, 255, 0.08);
+        --soft: rgba(255, 255, 255, 0.02);
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       html, body {
         margin: 0;
         min-height: 100%;
-        font-family: Arial, Helvetica, sans-serif;
         background: var(--bg);
         color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
       }
 
       body {
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
-        padding: 24px;
+        padding: 32px;
       }
 
-      .container {
-        width: min(900px, 100%);
-        background: linear-gradient(180deg, var(--panel) 0%, var(--panel-alt) 100%);
+      .shell {
+        width: min(760px, 100%);
         border: 1px solid var(--line);
-        border-radius: 18px;
-        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-        padding: 48px 32px;
+        background: var(--panel);
+        padding: 48px 36px;
       }
 
-      .label {
-        display: inline-block;
-        font-size: 12px;
-        letter-spacing: 0.14em;
+      .topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .name {
+        font-size: clamp(2.3rem, 7vw, 5rem);
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+        margin: 0;
+      }
+
+      .meta {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: var(--accent);
-        background: var(--accent-soft);
-        border: 1px solid rgba(125, 211, 252, 0.25);
-        border-radius: 999px;
-        padding: 8px 12px;
-        margin-bottom: 18px;
       }
 
-      h1 {
+      .content {
+        padding-top: 28px;
+      }
+
+      p {
         margin: 0;
-        font-size: clamp(2.8rem, 7vw, 6rem);
-        line-height: 0.95;
-        letter-spacing: -0.06em;
-      }
-
-      .subtitle {
-        margin: 18px 0 0;
-        font-size: 1.05rem;
-        line-height: 1.7;
-        max-width: 42rem;
         color: var(--muted);
-      }
-
-      .section {
-        margin-top: 40px;
-        padding-top: 24px;
-        border-top: 1px solid var(--line);
-      }
-
-      .projects {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-        margin-top: 20px;
-      }
-
-      .project {
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: rgba(148, 163, 184, 0.04);
-        padding: 18px 16px;
-      }
-
-      .project h2 {
-        margin: 0 0 10px;
         font-size: 1rem;
-        color: var(--ink);
+        line-height: 1.8;
+        max-width: 38rem;
       }
 
-      .project p {
-        margin: 0;
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.6;
+      .links {
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .link {
+        display: inline-block;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        text-decoration: none;
+        background: var(--soft);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
       }
     </style>
   </head>
   <body>
-    <main class="container">
-      <div class="label">Portfolio</div>
-      <h1>CarbonRobin</h1>
-      <p class="subtitle">
-        Building, learning, and creating things that live online.
-      </p>
+    <main class="shell">
+      <div class="topline">
+        <h1 class="name">CarbonRobin</h1>
+        <div class="meta">Portfolio</div>
+      </div>
 
-      <div class="section">
-        <div class="projects">
-          <article class="project">
-            <h2>About</h2>
-            <p>Short bio or intro can go here.</p>
-          </article>
+      <div class="content">
+        <p>
+          Building, learning, and creating things online.
+        </p>
 
-          <article class="project">
-            <h2>Projects</h2>
-            <p>Space for featured work and experiments.</p>
-          </article>
-
-          <article class="project">
-            <h2>Contact</h2>
-            <p>Email, links, or socials can live here.</p>
-          </article>
+        <div class="links">
+          <a class="link" href="#about">About</a>
+          <a class="link" href="#projects">Projects</a>
+          <a class="link" href="#contact">Contact</a>
         </div>
       </div>
     </main>
