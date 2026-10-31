@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CarbonRobin</title>
+    <style>
+      :root {
+        --bg: #f4f1ea;
+        --panel: #ffffff;
+        --ink: #1d1d1f;
+        --muted: #5b5b5b;
+        --accent: #3a7d6d;
+        --accent-soft: #dfeee9;
+        --line: #e5e0d8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .container {
+        width: min(900px, 100%);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        padding: 48px 32px;
+      }
+
+      .label {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 8px 12px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.8rem, 7vw, 6rem);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+      }
+
+      .subtitle {
+        margin: 18px 0 0;
+        font-size: 1.05rem;
+        line-height: 1.6;
+        max-width: 42rem;
+        color: var(--muted);
+      }
+
+      .section {
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+      }
+
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .project {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #faf9f6;
+        padding: 18px 16px;
+      }
+
+      .project h2 {
+        margin: 0 0 10px;
+        font-size: 1rem;
+      }
+
+      .project p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div class="label">Portfolio</div>
+      <h1>CarbonRobin</h1>
+      <p class="subtitle">
+        Building, learning, and creating things that live online.
+      </p>
+
+      <div class="section">
+        <div class="projects">
+          <article class="project">
+            <h2>About</h2>
+            <p>Short bio or intro can go here.</p>
+          </article>
+
+          <article class="project">
+            <h2>Projects</h2>
+            <p>Space for featured work and experiments.</p>
+          </article>
+
+          <article class="project">
+            <h2>Contact</h2>
+            <p>Email, links, or socials can live here.</p>
+          </article>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
