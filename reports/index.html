@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Group Power Report</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #2563eb;
+      --accent-2: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 24px;
+    }
+
+    .header {
+      background: var(--bg);
+      color: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .header p {
+      margin: 0;
+      color: #cbd5e1;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .summary-card .label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .summary-card .value {
+      margin-top: 12px;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .group-block {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    .group-header {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .group-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.96rem;
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    th {
+      background: #f8fafc;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+
+    .online { color: var(--accent-2); font-weight: 700; }
+    .offline { color: var(--danger); font-weight: 700; }
+    .unknown { color: var(--warning); font-weight: 700; }
+    .rank {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 760px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead { display: none; }
+
+      tr {
+        border-bottom: 1px solid var(--border);
+        padding: 12px;
+      }
+
+      td {
+        border: none;
+        padding: 8px 0;
+      }
+
+      td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Group Power Report</h1>
+      <p>Generated from the CSV data in this repo</p>
+    </div>
+
+    <div id="summary"></div>
+    <div id="report"></div>
+  </div>
+
+  <script>
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      const rows = [];
+      for (const line of lines) {
+        const cells = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              current += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (ch === ',' && !inQuotes) {
+            cells.push(current);
+            current = '';
+          } else {
+            current += ch;
+          }
+        }
+        cells.push(current);
+        rows.push(cells.map(cell => cell.trim()));
+      }
+      return rows;
+    }
+
+    function toNum(value) {
+      const n = Number(String(value).replace(/[^0-9.-]/g, ''));
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function getStatusClass(status) {
+      const s = String(status || '').toLowerCase();
+      if (s.includes('online')) return 'online';
+      if (s.includes('offline') || s.includes('no response')) return 'offline';
+      return 'unknown';
+    }
+
+    async function loadReport() {
+      try {
+        const response = await fetch('current.csv');
+        if (!response.ok) {
+          throw new Error('Unable to load CSV file');
+        }
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+        const header = rows[0] || [];
+        const dataRows = rows.slice(1);
+
+        const groups = {};
+
+        for (const row of dataRows) {
+          if (row.length < 7) continue;
+          const rowObj = {};
+          header.forEach((key, index) => {
+            rowObj[key] = row[index] || '';
+          });
+
+          const groupName = rowObj.Group || 'Unknown';
+          if (!groups[groupName]) {
+            groups[groupName] = { players: [] };
+          }
+
+          const power = toNum(rowObj.Power);
+          groups[groupName].players.push({
+            ...rowObj,
+            power,
+            status: rowObj['Online / Offline'] || ''
+          });
+        }
+
+        Object.keys(groups).forEach(groupName => {
+          const players = groups[groupName].players;
+          const numericPowers = players.map(p => p.power).filter(v => v !== null);
+          groups[groupName].avgPower = numericPowers.length
+            ? numericPowers.reduce((sum, value) => sum + value, 0) / numericPowers.length
+            : 0;
+
+          groups[groupName].onlineCount = players.filter(p => {
+            const s = String(p.status || '').toLowerCase();
+            return s.includes('online');
+          }).length;
+        });
+
+        const totalPlayers = Object.values(groups).reduce((sum, group) => sum + group.players.length, 0);
+        const totalGroups = Object.keys(groups).length;
+        const avgGroupPower = Object.values(groups).reduce((sum, group) => sum + group.avgPower, 0) / Math.max(totalGroups, 1);
+        const onlineCount = Object.values(groups).reduce((sum, group) => sum + group.onlineCount, 0);
+
+        document.getElementById('summary').innerHTML = `
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="label">Total Groups</div>
+              <div class="value">${totalGroups}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Total Players</div>
+              <div class="value">${totalPlayers}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Average Group Power</div>
+              <div class="value">${avgGroupPower.toFixed(1)}</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Online Players</div>
+              <div class="value">${onlineCount}</div>
+            </div>
+          </div>
+        `;
+
+        const reportEl = document.getElementById('report');
+        reportEl.innerHTML = Object.entries(groups)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([groupName, group]) => {
+            const rowsHtml = group.players.map(player => {
+              const status = player.status || 'Unknown';
+              const statusClass = getStatusClass(status);
+              const powerText = player.power !== null ? player.power.toFixed(1) : '—';
+              const marchesText = player.Marches || '—';
+              const rankText = player.Rank || '—';
+              const nameText = player.Name || '—';
+
+              return `
+                <tr>
+                  <td data-label="Name">${nameText}</td>
+                  <td data-label="Rank"><span class="rank">${rankText}</span></td>
+                  <td data-label="Power">${powerText}</td>
+                  <td data-label="Marches">${marchesText}</td>
+                  <td data-label="Status"><span class="${statusClass}">${status}</span></td>
+                </tr>
+              `;
+            }).join('');
+
+            return `
+              <section class="group-block">
+                <div class="group-header">
+                  <h2>${groupName}</h2>
+                  <span class="badge">Average power: ${group.avgPower ? group.avgPower.toFixed(1) : '—'}</span>
+                </div>
+
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Rank</th>
+                      <th>Power</th>
+                      <th>Marches</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rowsHtml}
+                  </tbody>
+                </table>
+              </section>
+            `;
+          }).join('');
+      } catch (error) {
+        document.getElementById('report').innerHTML = '<p style="color: #b91c1c; font-weight: bold;">Error loading CSV data.</p>';
+        console.error(error);
+      }
+    }
+
+    loadReport();
+  </script>
+</body>
+</html>
