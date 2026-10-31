@@ -3,120 +3,370 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Group Power Report</title>
+  <title>Crazy Joe Event Report</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #1f2937;
+      --bg: #07111f;
+      --bg-2: #0f1f33;
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: #111827;
       --card: #ffffff;
-      --text: #0f172a;
+      --ink: #0f172a;
       --muted: #475569;
-      --accent: #2563eb;
-      --accent-2: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --border: #e5e7eb;
+      --line: #e2e8f0;
+      --blue: #2563eb;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --purple: #8b5cf6;
+      --gold: #facc15;
+      --shadow: 0 18px 40px rgba(2, 6, 23, 0.18);
     }
 
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
-      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 22%),
+        linear-gradient(180deg, #eef4ff 0%, #f8fafc 100%);
+      color: var(--ink);
     }
 
     .container {
-      max-width: 1400px;
-      margin: 30px auto;
-      padding: 24px;
+      max-width: 1450px;
+      margin: 28px auto;
+      padding: 0 20px 36px;
     }
 
-    .header {
-      background: var(--bg);
+    .topbar {
+      background: linear-gradient(135deg, var(--bg), var(--bg-2));
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 28px 28px 20px;
       color: white;
-      border-radius: 16px;
-      padding: 28px 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+      margin-bottom: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
     }
 
-    .header h1 {
-      margin: 0 0 8px;
-      font-size: 2rem;
-    }
-
-    .header p {
-      margin: 0;
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
       color: #cbd5e1;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .meta-pill {
+      background: rgba(148, 163, 184, 0.15);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      color: #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: rgba(255,255,255,0.62);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 8px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .chip {
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    .select-wrap {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 12px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    select {
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--ink);
+      outline: none;
+      padding-right: 10px;
+      cursor: pointer;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, var(--green), #34d399);
+      color: white;
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, var(--purple), #a78bfa);
+      color: white;
     }
 
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .summary-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+      border-left: 5px solid var(--blue);
     }
+
+    .summary-card:nth-child(2) { border-left-color: var(--purple); }
+    .summary-card:nth-child(3) { border-left-color: var(--green); }
+    .summary-card:nth-child(4) { border-left-color: var(--orange); }
 
     .summary-card .label {
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-    }
-
-    .summary-card .value {
-      margin-top: 12px;
-      font-size: 1.6rem;
       font-weight: 700;
     }
 
+    .summary-card .value {
+      margin-top: 8px;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: linear-gradient(135deg, #f8fafc, #eef2ff);
+      border-bottom: 1px solid var(--line);
+      padding: 16px 18px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+
+    .leaderboard {
+      padding: 18px;
+    }
+
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .leader-item {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .leader-item:last-child {
+      border-bottom: none;
+    }
+
+    .rank-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), #fde68a);
+      color: #5c4300;
+    }
+
+    .leader-name {
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .leader-power {
+      font-weight: 800;
+      color: var(--blue);
+    }
+
+    .bar-chart {
+      padding: 18px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 82px 1fr 74px;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .chart-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .bar-shell {
+      position: relative;
+      height: 18px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: inherit;
+    }
+
+    .chart-value {
+      text-align: right;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
     .group-block {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 16px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--line);
+      border-radius: 18px;
       overflow: hidden;
       margin-bottom: 22px;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
     }
 
     .group-header {
       background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .group-header h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
     }
 
-    .badge {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
+    .players-table-wrap {
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
+      min-width: 760px;
       border-collapse: collapse;
       table-layout: fixed;
     }
@@ -124,7 +374,7 @@
     th, td {
       padding: 12px 14px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--line);
       font-size: 0.96rem;
       vertical-align: top;
       word-break: break-word;
@@ -132,71 +382,152 @@
 
     th {
       background: #f8fafc;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--muted);
+      font-weight: 800;
     }
 
     tr:hover td {
       background: #f8fafc;
     }
 
-    .online { color: var(--accent-2); font-weight: 700; }
-    .offline { color: var(--danger); font-weight: 700; }
-    .unknown { color: var(--warning); font-weight: 700; }
-    .rank {
+    .online { color: var(--green); font-weight: 800; }
+    .offline { color: var(--red); font-weight: 800; }
+    .unknown { color: var(--orange); font-weight: 800; }
+
+    .rank-bubble {
       display: inline-block;
-      padding: 4px 8px;
+      padding: 5px 9px;
       border-radius: 999px;
-      background: #e2e8f0;
-      font-weight: 700;
-      font-size: 0.78rem;
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+      font-weight: 800;
+      font-size: 0.76rem;
+      color: var(--ink);
     }
 
-    @media (max-width: 760px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
+    .group-badge {
+      display: inline-block;
+      background: var(--blue);
+      color: white;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .empty-state {
+      padding: 30px 18px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .toolbar {
+        align-items: stretch;
       }
 
-      thead { display: none; }
-
-      tr {
-        border-bottom: 1px solid var(--border);
-        padding: 12px;
+      .controls, .action-row {
+        width: 100%;
       }
 
-      td {
-        border: none;
-        padding: 8px 0;
+      .action-row {
+        justify-content: flex-start;
       }
+    }
 
-      td::before {
-        content: attr(data-label);
-        display: block;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--muted);
-        margin-bottom: 4px;
+    @media print {
+      body {
+        background: white;
+      }
+      .button, .toolbar {
+        display: none !important;
+      }
+      .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .group-block, .panel, .summary-card {
+        box-shadow: none;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Group Power Report</h1>
-      <p>Generated from the CSV data in this repo</p>
+    <div class="topbar">
+      <div class="eyebrow">Whiteout Survival</div>
+      <div class="title-row">
+        <div>
+          <h1>Crazy Joe Event Report</h1>
+          <div class="meta">
+            <span class="meta-pill">Alliance: 105</span>
+            <span class="meta-pill">State: 2556</span>
+            <span class="meta-pill">Date: February 11, 2026</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="summary"></div>
+    <div class="toolbar">
+      <div class="controls">
+        <div class="chip-group" id="statusFilters" aria-label="Status filter">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="online">Online</button>
+          <button class="chip" data-filter="offline">Offline</button>
+          <button class="chip" data-filter="no response">No Response</button>
+        </div>
+
+        <div class="select-wrap">
+          <label for="sortSelect" style="display:none;">Sort</label>
+          <select id="sortSelect" aria-label="Sort players">
+            <option value="power-desc">Sort: Strongest First</option>
+            <option value="power-asc">Sort: Weakest First</option>
+            <option value="group-average">Sort: Group Average</option>
+            <option value="name">Sort: Name A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button id="downloadCsv" class="button download-btn">Download CSV</button>
+        <button id="printReport" class="button print-btn">Print Report</button>
+      </div>
+    </div>
+
+    <div id="summary" class="summary-grid"></div>
+
+    <div class="chart-grid">
+      <div class="panel">
+        <div class="panel-header">Top Power Players</div>
+        <div id="leaderboard" class="leaderboard"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Group Power Leaderboard</div>
+        <div id="barChart" class="bar-chart"></div>
+      </div>
+    </div>
+
     <div id="report"></div>
   </div>
 
   <script>
+    const csvUrl = 'current.csv';
+    let currentFilter = 'all';
+    let currentSort = 'power-desc';
+    let allGroups = {};
+
     function parseCSV(text) {
-      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      const lines = text.trim().split(/\r?\n/).filter(line => line.trim() !== '');
       const rows = [];
       for (const line of lines) {
         const cells = [];
@@ -226,144 +557,306 @@
     }
 
     function toNum(value) {
-      const n = Number(String(value).replace(/[^0-9.-]/g, ''));
+      const cleaned = String(value || '').replace(/[^0-9.-]/g, '');
+      if (!cleaned) return null;
+      const n = Number(cleaned);
       return Number.isFinite(n) ? n : null;
     }
 
-    function getStatusClass(status) {
-      const s = String(status || '').toLowerCase();
+    function normalizeStatus(value) {
+      const s = String(value || '').trim().toLowerCase();
+      if (!s) return 'unknown';
       if (s.includes('online')) return 'online';
       if (s.includes('offline') || s.includes('no response')) return 'offline';
+      if (s.includes('no response')) return 'no response';
       return 'unknown';
     }
 
-    async function loadReport() {
-      try {
-        const response = await fetch('current.csv');
-        if (!response.ok) {
-          throw new Error('Unable to load CSV file');
-        }
-
-        const csvText = await response.text();
-        const rows = parseCSV(csvText);
-        const header = rows[0] || [];
-        const dataRows = rows.slice(1);
-
-        const groups = {};
-
-        for (const row of dataRows) {
-          if (row.length < 7) continue;
-          const rowObj = {};
-          header.forEach((key, index) => {
-            rowObj[key] = row[index] || '';
-          });
-
-          const groupName = rowObj.Group || 'Unknown';
-          if (!groups[groupName]) {
-            groups[groupName] = { players: [] };
-          }
-
-          const power = toNum(rowObj.Power);
-          groups[groupName].players.push({
-            ...rowObj,
-            power,
-            status: rowObj['Online / Offline'] || ''
-          });
-        }
-
-        Object.keys(groups).forEach(groupName => {
-          const players = groups[groupName].players;
-          const numericPowers = players.map(p => p.power).filter(v => v !== null);
-          groups[groupName].avgPower = numericPowers.length
-            ? numericPowers.reduce((sum, value) => sum + value, 0) / numericPowers.length
-            : 0;
-
-          groups[groupName].onlineCount = players.filter(p => {
-            const s = String(p.status || '').toLowerCase();
-            return s.includes('online');
-          }).length;
-        });
-
-        const totalPlayers = Object.values(groups).reduce((sum, group) => sum + group.players.length, 0);
-        const totalGroups = Object.keys(groups).length;
-        const avgGroupPower = Object.values(groups).reduce((sum, group) => sum + group.avgPower, 0) / Math.max(totalGroups, 1);
-        const onlineCount = Object.values(groups).reduce((sum, group) => sum + group.onlineCount, 0);
-
-        document.getElementById('summary').innerHTML = `
-          <div class="summary-grid">
-            <div class="summary-card">
-              <div class="label">Total Groups</div>
-              <div class="value">${totalGroups}</div>
-            </div>
-            <div class="summary-card">
-              <div class="label">Total Players</div>
-              <div class="value">${totalPlayers}</div>
-            </div>
-            <div class="summary-card">
-              <div class="label">Average Group Power</div>
-              <div class="value">${avgGroupPower.toFixed(1)}</div>
-            </div>
-            <div class="summary-card">
-              <div class="label">Online Players</div>
-              <div class="value">${onlineCount}</div>
-            </div>
-          </div>
-        `;
-
-        const reportEl = document.getElementById('report');
-        reportEl.innerHTML = Object.entries(groups)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([groupName, group]) => {
-            const rowsHtml = group.players.map(player => {
-              const status = player.status || 'Unknown';
-              const statusClass = getStatusClass(status);
-              const powerText = player.power !== null ? player.power.toFixed(1) : '—';
-              const marchesText = player.Marches || '—';
-              const rankText = player.Rank || '—';
-              const nameText = player.Name || '—';
-
-              return `
-                <tr>
-                  <td data-label="Name">${nameText}</td>
-                  <td data-label="Rank"><span class="rank">${rankText}</span></td>
-                  <td data-label="Power">${powerText}</td>
-                  <td data-label="Marches">${marchesText}</td>
-                  <td data-label="Status"><span class="${statusClass}">${status}</span></td>
-                </tr>
-              `;
-            }).join('');
-
-            return `
-              <section class="group-block">
-                <div class="group-header">
-                  <h2>${groupName}</h2>
-                  <span class="badge">Average power: ${group.avgPower ? group.avgPower.toFixed(1) : '—'}</span>
-                </div>
-
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Rank</th>
-                      <th>Power</th>
-                      <th>Marches</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${rowsHtml}
-                  </tbody>
-                </table>
-              </section>
-            `;
-          }).join('');
-      } catch (error) {
-        document.getElementById('report').innerHTML = '<p style="color: #b91c1c; font-weight: bold;">Error loading CSV data.</p>';
-        console.error(error);
-      }
+    function getStatusClass(status) {
+      const normalized = normalizeStatus(status);
+      if (normalized === 'online') return 'online';
+      if (normalized === 'offline' || normalized === 'no response') return 'offline';
+      return 'unknown';
     }
 
-    loadReport();
+    function statusLabel(status) {
+      const normalized = normalizeStatus(status);
+      if (normalized === 'online') return 'Online';
+      if (normalized === 'offline') return 'Offline';
+      if (normalized === 'no response') return 'No Response';
+      return 'Unknown';
+    }
+
+    function filteredGroups() {
+      const filtered = {};
+      Object.entries(allGroups).forEach(([groupName, group]) => {
+        const players = group.players.filter(player => {
+          if (currentFilter === 'all') return true;
+          const status = normalizeStatus(player['Online / Offline']);
+          if (currentFilter === 'online') return status === 'online';
+          if (currentFilter === 'offline') return status === 'offline' || status === 'no response';
+          if (currentFilter === 'no response') return status === 'no response';
+          return true;
+        });
+
+        if (players.length) {
+          filtered[groupName] = { ...group, players };
+        }
+      });
+      return filtered;
+    }
+
+    function sortPlayers(players) {
+      const sorted = [...players];
+      if (currentSort === 'power-desc') {
+        return sorted.sort((a, b) => (toNum(b.Power) ?? -Infinity) - (toNum(a.Power) ?? -Infinity));
+      }
+      if (currentSort === 'power-asc') {
+        return sorted.sort((a, b) => (toNum(a.Power) ?? Infinity) - (toNum(b.Power) ?? Infinity));
+      }
+      if (currentSort === 'group-average') {
+        return sorted.sort((a, b) => {
+          const groupA = allGroups[a.Group]?.avgPower ?? 0;
+          const groupB = allGroups[b.Group]?.avgPower ?? 0;
+          return groupB - groupA || ((toNum(b.Power) ?? -Infinity) - (toNum(a.Power) ?? -Infinity));
+        });
+      }
+      if (currentSort === 'name') {
+        return sorted.sort((a, b) => (a.Name || '').localeCompare(b.Name || ''));
+      }
+      return sorted;
+    }
+
+    function buildSummary(groups) {
+      const totalGroups = Object.keys(groups).length;
+      const totalPlayers = Object.values(groups).reduce((sum, group) => sum + group.players.length, 0);
+      const onlinePlayers = Object.values(groups).reduce((sum, group) => {
+        return sum + group.players.filter(player => normalizeStatus(player['Online / Offline']) === 'online').length;
+      }, 0);
+
+      const avgGroupPower = Object.values(groups).reduce((sum, group) => sum + (group.avgPower || 0), 0) / Math.max(totalGroups, 1);
+
+      const summaryEl = document.getElementById('summary');
+      summaryEl.innerHTML = `
+        <div class="summary-card">
+          <div class="label">Groups</div>
+          <div class="value">${totalGroups}</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Players</div>
+          <div class="value">${totalPlayers}</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Avg Group Power</div>
+          <div class="value">${avgGroupPower.toFixed(1)}</div>
+        </div>
+        <div class="summary-card">
+          <div class="label">Online</div>
+          <div class="value">${onlinePlayers}</div>
+        </div>
+      `;
+    }
+
+    function renderLeaderboard(groups) {
+      const leaderboardEl = document.getElementById('leaderboard');
+      const allPlayers = [];
+      Object.values(groups).forEach(group => {
+        group.players.forEach(player => allPlayers.push(player));
+      });
+
+      const topPlayers = allPlayers
+        .filter(player => toNum(player.Power) !== null)
+        .sort((a, b) => (toNum(b.Power) ?? -Infinity) - (toNum(a.Power) ?? -Infinity))
+        .slice(0, 8);
+
+      const maxPower = Math.max(...topPlayers.map(p => toNum(p.Power) ?? 0), 1);
+
+      leaderboardEl.innerHTML = topPlayers.length
+        ? `<div class="leaderboard-list">${topPlayers.map((player, index) => `
+            <div class="leader-item">
+              <div class="rank-badge">${index + 1}</div>
+              <div class="leader-name">${player.Name || 'Unknown'}</div>
+              <div class="leader-power">${toNum(player.Power)?.toFixed(1) ?? '—'}</div>
+            </div>
+          `).join('')}</div>`
+        : '<div class="empty-state">No players match the current filter.</div>';
+
+      const barChartEl = document.getElementById('barChart');
+      const groupLeaders = Object.entries(groups)
+        .map(([groupName, group]) => ({ groupName, power: group.avgPower || 0 }))
+        .sort((a, b) => b.power - a.power)
+        .slice(0, 7);
+
+      const maxGroupPower = Math.max(...groupLeaders.map(item => item.power), 1);
+
+      barChartEl.innerHTML = groupLeaders.length
+        ? groupLeaders.map(item => `
+            <div class="chart-row">
+              <div class="chart-label">${item.groupName}</div>
+              <div class="bar-shell">
+                <div class="bar-fill" style="width:${(item.power / maxGroupPower) * 100}%"></div>
+              </div>
+              <div class="chart-value">${item.power.toFixed(1)}</div>
+            </div>
+          `).join('')
+        : '<div class="empty-state">No groups match the current filter.</div>';
+    }
+
+    function renderReport() {
+      const groups = filteredGroups();
+
+      buildSummary(groups);
+      renderLeaderboard(groups);
+
+      const reportEl = document.getElementById('report');
+      const sortedGroups = Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
+
+      reportEl.innerHTML = sortedGroups.map(([groupName, group]) => {
+        const players = sortPlayers(group.players);
+        group.avgPower = players.length
+          ? players.reduce((sum, p) => sum + (toNum(p.Power) ?? 0), 0) / players.length
+          : 0;
+
+        const rowsHtml = players.map(player => {
+          const status = statusLabel(player['Online / Offline']);
+          const statusClass = getStatusClass(player['Online / Offline']);
+          const power = toNum(player.Power);
+          return `
+            <tr>
+              <td data-label="Name">${player.Name || '—'}</td>
+              <td data-label="Rank"><span class="rank-bubble">${player.Rank || '—'}</span></td>
+              <td data-label="Power">${power !== null ? power.toFixed(1) : '—'}</td>
+              <td data-label="Marches">${player.Marches || '—'}</td>
+              <td data-label="Status"><span class="${statusClass}">${status}</span></td>
+            </tr>
+          `;
+        }).join('');
+
+        return `
+          <section class="group-block">
+            <div class="group-header">
+              <h2>${groupName}</h2>
+              <span class="group-badge">Avg Power: ${group.avgPower ? group.avgPower.toFixed(1) : '—'}</span>
+            </div>
+            <div class="players-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Rank</th>
+                    <th>Power</th>
+                    <th>Marches</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml || '<tr><td colspan="5" class="empty-state">No players</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        `;
+      }).join('') || '<div class="empty-state">No groups match the current filter.</div>';
+    }
+
+    function updateFilterButtons() {
+      document.querySelectorAll('.chip').forEach(button => {
+        button.classList.toggle('active', button.dataset.filter === currentFilter);
+      });
+    }
+
+    function bindControls() {
+      document.querySelectorAll('.chip').forEach(button => {
+        button.addEventListener('click', () => {
+          currentFilter = button.dataset.filter;
+          updateFilterButtons();
+          renderReport();
+        });
+      });
+
+      document.getElementById('sortSelect').addEventListener('change', (event) => {
+        currentSort = event.target.value;
+        renderReport();
+      });
+
+      document.getElementById('downloadCsv').addEventListener('click', () => {
+        const filteredRows = [];
+        const groups = filteredGroups();
+        Object.values(groups).forEach(group => {
+          group.players.forEach(player => filteredRows.push(player));
+        });
+
+        const header = ['Group', 'Name', 'Rank', 'Power', 'Marches', 'Online / Offline', 'Average Group Power'];
+        const csvRows = [header];
+
+        filteredRows.forEach(player => {
+          const average = (allGroups[player.Group]?.avgPower ?? 0).toFixed(1);
+          csvRows.push([
+            player.Group,
+            player.Name,
+            player.Rank,
+            player.Power,
+            player.Marches,
+            player['Online / Offline'],
+            average
+          ]);
+        });
+
+        const csvContent = csvRows.map(row => row.map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'crazy-joe-105-filtered.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('printReport').addEventListener('click', () => window.print());
+    }
+
+    async function loadData() {
+      const response = await fetch(csvUrl);
+      if (!response.ok) throw new Error('Unable to load CSV data');
+      const text = await response.text();
+      const rows = parseCSV(text);
+      const header = rows[0] || [];
+      const dataRows = rows.slice(1);
+
+      const groups = {};
+      dataRows.forEach(row => {
+        if (!row || row.length < 7) return;
+        const record = {};
+        header.forEach((key, index) => {
+          record[key] = row[index] || '';
+        });
+
+        const groupName = record.Group || 'Unknown';
+        if (!groups[groupName]) {
+          groups[groupName] = { players: [] };
+        }
+
+        groups[groupName].players.push(record);
+      });
+
+      Object.keys(groups).forEach(groupName => {
+        const players = groups[groupName].players;
+        const powers = players.map(player => toNum(player.Power)).filter(Number.isFinite);
+        groups[groupName].avgPower = powers.length ? powers.reduce((sum, value) => sum + value, 0) / powers.length : 0;
+      });
+
+      allGroups = groups;
+      renderReport();
+      bindControls();
+      updateFilterButtons();
+    }
+
+    loadData().catch(error => {
+      console.error(error);
+      document.getElementById('report').innerHTML = '<div class="empty-state" style="color:#b91c1c;">Unable to load the report data.</div>';
+    });
   </script>
 </body>
 </html>
