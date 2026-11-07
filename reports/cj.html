@@ -27,7 +27,7 @@
     th { color:#a7bfd3; font-size:.8rem; text-transform:uppercase; }
     tr:hover td { background:#ffffff0a; }
     .empty { color:#a7bfd3; padding:24px; text-align:center; }
-    @media print { :root { color-scheme:light; color:#111; background:white; } body { background:white; } main { margin:0; max-width:none; } header,section { box-shadow:none; border-color:#bbb; } }
+    @media print { :root { color-scheme:light; color:#111; background:white; } body { background:white; } main { margin:0; max-width:none; } header,section { box-shadow:none; border-color:#bbb; } .toolbar { display:none; } th,td { color:#111; } }
   </style>
 </head>
 <body>
@@ -98,15 +98,11 @@
     if (sortSelect.value === 'power-desc') visible.sort((a,b) => power(b)-power(a));
     if (sortSelect.value === 'power-asc') visible.sort((a,b) => power(a)-power(b));
     if (sortSelect.value === 'name') visible.sort((a,b) => (a.Name || '').localeCompare(b.Name || ''));
-    const groups = visible.reduce((result, record) => {
-      const group = record.Group || 'Unknown';
-      (result[group] ||= []).push(record);
-      return result;
-    }, {});
+    const groups = Object.groupBy ? Object.groupBy(visible, record => record.Group || 'Unknown') : visible.reduce((result, record) => ((result[record.Group || 'Unknown'] ||= []).push(record), result), {});
     reportEl.innerHTML = Object.entries(groups).sort(([a],[b]) => a.localeCompare(b)).map(([group, players]) => `
       <section><h2>${escapeHtml(group)} <small>· ${players.length} players</small></h2><div class="table-wrap"><table>
       <thead><tr><th>Name</th><th>Rank</th><th>Power</th><th>Marches</th><th>Status</th></tr></thead>
-      <tbody>${players.map(player => `<tr><td>${escapeHtml(player.Name || '—')}</td><td>${escapeHtml(player.Rank || '—')}</td><td>${escapeHtml(player.Power || '—')}</td><td>${escapeHtml(player.Marches || '—')}</td><td>${escapeHtml(player['Online / Offline'] || '—')}</td></tr>`).join('')}</tbody>
+      <tbody>${players.map(player => `<tr><td>${escapeHtml(player.Name || '—')}</td><td>${escapeHtml(player.Rank || '—')}</td><td>${escapeHtml(player.Power || '—')}</td><td>${escapeHtml(player.Marches || '—')}</td><td>${escapeHtml(player['Online / Offline'] || 'Unknown')}</td></tr>`).join('')}</tbody>
       </table></div></section>`).join('') || '<div class="empty">No players match this filter.</div>';
     statusEl.textContent = `${visible.length} players · ${reportSelect.selectedOptions[0]?.textContent || ''}`;
   }
